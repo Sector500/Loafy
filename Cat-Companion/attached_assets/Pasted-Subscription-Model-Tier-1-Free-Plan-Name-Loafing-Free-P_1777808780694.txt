@@ -1,0 +1,210 @@
+Subscription Model
+Tier 1: Free Plan
+Name:
+
+Loafing Free
+
+Price:
+
+£0
+
+Features:
+1 cat profile
+Store vet details
+Basic medication reminders
+Food tracker
+Weight tracker (30 day history)
+5 milestones
+20 photos
+Access to basic care guides
+Goal:
+
+Get signups and habitual usage.
+
+Tier 2: Paid Plan
+Name:
+
+Loafing Plus
+
+Price:
+
+£25/year
+
+Features:
+
+Includes everything in Free, plus:
+
+Unlimited cat profiles
+Unlimited reminders
+Recurring medication schedules
+Vaccine / flea / worm reminders
+Full weight history + charts
+Unlimited food logs
+Unlimited milestones
+Unlimited photo memories
+Memory timeline
+Export cat baby book PDF
+Shared family access
+Premium care guides
+Backup + sync
+Goal:
+
+Primary revenue plan.
+
+No Monthly Plan at Launch
+
+Do not include monthly subscription initially.
+
+Keep pricing simple:
+
+Free
+Plus £25/year
+
+Monthly can be added later if needed.
+
+Upgrade Triggers In App
+
+Prompt upgrade when free user tries to:
+
+Add second cat
+Add more than 20 photos
+View old weight history
+Export memory book
+Add family member
+Use premium guides
+
+Use soft modal:
+
+“Unlock Loafing Plus for £25/year”
+
+Recommended Payment Setup
+
+Use:
+
+Stripe
+
+Need:
+
+Annual recurring billing
+Free trial optional (7 days)
+Secure checkout
+Manage subscription portal
+Auto renew email reminders
+User Flow
+New User
+Sign up
+Add cat profile
+Use free plan
+Hit free limit
+Upgrade prompt appears
+Purchase Loafing Plus
+Dashboard Logic
+
+If Free User:
+
+Show locked premium cards:
+
+Unlimited memories
+Full health charts
+Multi-cat support
+PDF keepsake exports
+
+If Paid User:
+
+Show Plus badge and premium access.
+
+Admin Requirements
+
+Build admin page for owner with:
+
+Total users
+Free users
+Paid users
+Conversion rate
+Active subscriptions
+Churn / cancellations
+Revenue total
+Database Tables Needed
+users
+id
+email
+password / auth
+plan_type
+subscription_status
+renewal_date
+created_at
+cats
+id
+user_id
+cat_name
+dob
+breed
+notes
+subscriptions
+id
+user_id
+stripe_customer_id
+stripe_subscription_id
+plan
+status
+started_at
+renews_at
+Design Direction
+
+Premium, calm, trustworthy.
+
+Colours:
+
+Warm cream
+Charcoal
+Soft grey
+Accent muted gold
+
+Feel:
+Modern pet wellness brand, not cartoon toy app.
+
+Homepage Pricing Copy
+Free
+
+Perfect for one cat and everyday basics.
+
+Loafing Plus £25/year
+
+Your cat’s health, routines and memories in one place.
+
+Unlimited cats. Full trackers. Keepsake exports.
+
+CTA button:
+Start Plus
+
+Retention Features
+
+Build notifications:
+
+Medication due today
+Weight reminder this week
+Gotcha day coming soon
+Add this month’s milestone photo
+Future Upsells (Later)
+
+Do not build now, note for roadmap:
+
+Household £39/year
+Senior cat mode
+Kitten mode
+Vet visit reports
+Memorial keepsake mode
+Priority Build Order
+Auth
+Free / paid plans
+Stripe payments
+Subscription gating
+Cat profiles
+Reminder system
+Memories/photos
+Charts
+Export PDF
+Admin analytics
+Final Instruction to Replit
+
+Build MVP fast, clean, mobile responsive. Prioritise conversions, retention, and reliability over fancy animations. Subscription system must be robust and easy to scale.

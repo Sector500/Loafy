@@ -1,0 +1,1594 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.1.0
+  description: Cat Care API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+  - name: cats
+  - name: feedings
+  - name: vet-appointments
+  - name: weight-logs
+  - name: dashboard
+  - name: milestones
+  - name: photo-album
+  - name: medications
+  - name: vet-contacts
+  - name: Storage
+    description: Object storage upload and serving endpoints.
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /cats:
+    get:
+      operationId: listCats
+      tags: [cats]
+      summary: List all cats
+      responses:
+        "200":
+          description: List of cats
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Cat"
+    post:
+      operationId: createCat
+      tags: [cats]
+      summary: Create a new cat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCatBody"
+      responses:
+        "201":
+          description: Created cat
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cat"
+
+  /cats/{id}:
+    get:
+      operationId: getCat
+      tags: [cats]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Cat details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cat"
+        "404":
+          description: Not found
+    put:
+      operationId: updateCat
+      tags: [cats]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCatBody"
+      responses:
+        "200":
+          description: Updated cat
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cat"
+    delete:
+      operationId: deleteCat
+      tags: [cats]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /cats/{catId}/feedings:
+    get:
+      operationId: listFeedings
+      tags: [feedings]
+      parameters:
+        - name: catId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of feedings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Feeding"
+    post:
+      operationId: logFeeding
+      tags: [feedings]
+      parameters:
+        - name: catId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LogFeedingBody"
+      responses:
+        "201":
+          description: Logged feeding
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Feeding"
+
+  /feedings/{id}:
+    delete:
+      operationId: deleteFeeding
+      tags: [feedings]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /cats/{catId}/vet-appointments:
+    get:
+      operationId: listVetAppointments
+      tags: [vet-appointments]
+      parameters:
+        - name: catId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of vet appointments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VetAppointment"
+    post:
+      operationId: createVetAppointment
+      tags: [vet-appointments]
+      parameters:
+        - name: catId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateVetAppointmentBody"
+      responses:
+        "201":
+          description: Created appointment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VetAppointment"
+
+  /vet-appointments/{id}:
+    put:
+      operationId: updateVetAppointment
+      tags: [vet-appointments]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateVetAppointmentBody"
+      responses:
+        "200":
+          description: Updated appointment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VetAppointment"
+    delete:
+      operationId: deleteVetAppointment
+      tags: [vet-appointments]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /cats/{catId}/weight-logs:
+    get:
+      operationId: listWeightLogs
+      tags: [weight-logs]
+      parameters:
+        - name: catId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of weight logs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WeightLog"
+    post:
+      operationId: logWeight
+      tags: [weight-logs]
+      parameters:
+        - name: catId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LogWeightBody"
+      responses:
+        "201":
+          description: Logged weight
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WeightLog"
+
+  /weight-logs/{id}:
+    delete:
+      operationId: deleteWeightLog
+      tags: [weight-logs]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      responses:
+        "200":
+          description: Summary statistics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /dashboard/upcoming-appointments:
+    get:
+      operationId: getUpcomingAppointments
+      tags: [dashboard]
+      responses:
+        "200":
+          description: Upcoming appointments with cat info
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AppointmentWithCat"
+
+  /dashboard/recent-feedings:
+    get:
+      operationId: getRecentFeedings
+      tags: [dashboard]
+      responses:
+        "200":
+          description: Recent feedings with cat info
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FeedingWithCat"
+
+  /dashboard/recent-milestones:
+    get:
+      operationId: getRecentMilestones
+      tags: [dashboard]
+      summary: Recent milestones across all cats
+      responses:
+        "200":
+          description: Recent milestones with cat info
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MilestoneWithCat"
+
+  /dashboard/medications-due:
+    get:
+      operationId: getMedicationsDue
+      tags: [dashboard]
+      summary: Active medications due within 24 hours or overdue
+      responses:
+        "200":
+          description: Due medications with cat info
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MedicationWithCat"
+
+  /cats/{catId}/milestones:
+    get:
+      operationId: listMilestones
+      tags: [milestones]
+      parameters:
+        - name: catId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of milestones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Milestone"
+    post:
+      operationId: createMilestone
+      tags: [milestones]
+      parameters:
+        - name: catId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMilestoneBody"
+      responses:
+        "201":
+          description: Created milestone
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Milestone"
+
+  /milestones/{id}:
+    put:
+      operationId: updateMilestone
+      tags: [milestones]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMilestoneBody"
+      responses:
+        "200":
+          description: Updated milestone
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Milestone"
+    delete:
+      operationId: deleteMilestone
+      tags: [milestones]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /cats/{catId}/album:
+    get:
+      operationId: listAlbum
+      tags: [photo-album]
+      summary: List photo album entries for a cat
+      parameters:
+        - name: catId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of album entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AlbumEntry"
+    post:
+      operationId: createAlbumEntry
+      tags: [photo-album]
+      summary: Add an entry to a cat's photo album
+      parameters:
+        - name: catId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAlbumEntryBody"
+      responses:
+        "201":
+          description: Created album entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlbumEntry"
+
+  /album/{id}:
+    put:
+      operationId: updateAlbumEntry
+      tags: [photo-album]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAlbumEntryBody"
+      responses:
+        "200":
+          description: Updated album entry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AlbumEntry"
+    delete:
+      operationId: deleteAlbumEntry
+      tags: [photo-album]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /cats/{catId}/medications:
+    get:
+      operationId: listMedications
+      tags: [medications]
+      parameters:
+        - name: catId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of medications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Medication"
+    post:
+      operationId: createMedication
+      tags: [medications]
+      parameters:
+        - name: catId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateMedicationBody"
+      responses:
+        "201":
+          description: Created medication
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Medication"
+
+  /medications/{id}:
+    put:
+      operationId: updateMedication
+      tags: [medications]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateMedicationBody"
+      responses:
+        "200":
+          description: Updated medication
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Medication"
+    delete:
+      operationId: deleteMedication
+      tags: [medications]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /storage/uploads/request-url:
+    post:
+      tags: [Storage]
+      operationId: requestUploadUrl
+      summary: Request a presigned URL for file upload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadUrlRequest'
+      responses:
+        '200':
+          description: Presigned upload URL generated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadUrlResponse'
+        '400':
+          description: Missing or invalid required fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+        '500':
+          description: Failed to generate upload URL.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+  /storage/objects/{objectPath}:
+    get:
+      tags: [Storage]
+      operationId: getStorageObject
+      summary: Serve an object entity from PRIVATE_OBJECT_DIR
+      parameters:
+        - name: objectPath
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Object content streamed.
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Object not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorEnvelope'
+
+  /vet-contacts:
+    get:
+      operationId: listVetContacts
+      tags: [vet-contacts]
+      summary: List all vet contacts (optionally filter by catId)
+      parameters:
+        - name: catId
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of vet contacts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/VetContact"
+    post:
+      operationId: createVetContact
+      tags: [vet-contacts]
+      summary: Create a vet contact
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateVetContactBody"
+      responses:
+        "201":
+          description: Created vet contact
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VetContact"
+
+  /vet-contacts/{id}:
+    put:
+      operationId: updateVetContact
+      tags: [vet-contacts]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateVetContactBody"
+      responses:
+        "200":
+          description: Updated vet contact
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/VetContact"
+    delete:
+      operationId: deleteVetContact
+      tags: [vet-contacts]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /cats/{catId}/health-records:
+    get:
+      operationId: listHealthRecords
+      tags: [health-records]
+      summary: List health records for a cat
+      parameters:
+        - name: catId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: List of health records
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/HealthRecord"
+    post:
+      operationId: createHealthRecord
+      tags: [health-records]
+      summary: Create a health record
+      parameters:
+        - name: catId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateHealthRecordBody"
+      responses:
+        "201":
+          description: Created health record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthRecord"
+
+  /health-records/{id}:
+    put:
+      operationId: updateHealthRecord
+      tags: [health-records]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateHealthRecordBody"
+      responses:
+        "200":
+          description: Updated health record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthRecord"
+    delete:
+      operationId: deleteHealthRecord
+      tags: [health-records]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /medications/{id}/mark-given:
+    post:
+      operationId: markMedicationGiven
+      tags: [medications]
+      summary: Mark a medication dose as given and set the next dose time
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MarkMedicationGivenBody"
+      responses:
+        "200":
+          description: Updated medication
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Medication"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required: [status]
+
+    Cat:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        breed:
+          type: string
+          nullable: true
+        birthdate:
+          type: string
+          nullable: true
+        weightKg:
+          type: number
+          nullable: true
+        photoUrl:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        favouriteToy:
+          type: string
+          nullable: true
+        favouriteFood:
+          type: string
+          nullable: true
+        personalityTraits:
+          type: string
+          nullable: true
+        favouriteSpot:
+          type: string
+          nullable: true
+        favouriteSound:
+          type: string
+          nullable: true
+        favouriteHuman:
+          type: string
+          nullable: true
+        traitScores:
+          type: string
+          nullable: true
+        awards:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+      required: [id, name, createdAt]
+
+    CreateCatBody:
+      type: object
+      properties:
+        name:
+          type: string
+        breed:
+          type: string
+          nullable: true
+        birthdate:
+          type: string
+          nullable: true
+        weightKg:
+          type: number
+          nullable: true
+        photoUrl:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        favouriteToy:
+          type: string
+          nullable: true
+        favouriteFood:
+          type: string
+          nullable: true
+        personalityTraits:
+          type: string
+          nullable: true
+        favouriteSpot:
+          type: string
+          nullable: true
+        favouriteSound:
+          type: string
+          nullable: true
+        favouriteHuman:
+          type: string
+          nullable: true
+        traitScores:
+          type: string
+          nullable: true
+        awards:
+          type: string
+          nullable: true
+      required: [name]
+
+    UpdateCatBody:
+      type: object
+      properties:
+        name:
+          type: string
+        breed:
+          type: string
+          nullable: true
+        birthdate:
+          type: string
+          nullable: true
+        weightKg:
+          type: number
+          nullable: true
+        photoUrl:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        favouriteToy:
+          type: string
+          nullable: true
+        favouriteFood:
+          type: string
+          nullable: true
+        personalityTraits:
+          type: string
+          nullable: true
+        favouriteSpot:
+          type: string
+          nullable: true
+        favouriteSound:
+          type: string
+          nullable: true
+        favouriteHuman:
+          type: string
+          nullable: true
+        traitScores:
+          type: string
+          nullable: true
+        awards:
+          type: string
+          nullable: true
+
+    Feeding:
+      type: object
+      properties:
+        id:
+          type: integer
+        catId:
+          type: integer
+        fedAt:
+          type: string
+        foodType:
+          type: string
+          nullable: true
+        amountGrams:
+          type: number
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+      required: [id, catId, fedAt]
+
+    LogFeedingBody:
+      type: object
+      properties:
+        fedAt:
+          type: string
+        foodType:
+          type: string
+          nullable: true
+        amountGrams:
+          type: number
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+      required: [fedAt]
+
+    VetAppointment:
+      type: object
+      properties:
+        id:
+          type: integer
+        catId:
+          type: integer
+        date:
+          type: string
+        type:
+          type: string
+        vetName:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        completed:
+          type: boolean
+      required: [id, catId, date, type, completed]
+
+    CreateVetAppointmentBody:
+      type: object
+      properties:
+        date:
+          type: string
+        type:
+          type: string
+        vetName:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        completed:
+          type: boolean
+      required: [date, type]
+
+    UpdateVetAppointmentBody:
+      type: object
+      properties:
+        date:
+          type: string
+        type:
+          type: string
+        vetName:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        completed:
+          type: boolean
+
+    WeightLog:
+      type: object
+      properties:
+        id:
+          type: integer
+        catId:
+          type: integer
+        weightKg:
+          type: number
+        loggedAt:
+          type: string
+        notes:
+          type: string
+          nullable: true
+      required: [id, catId, weightKg, loggedAt]
+
+    LogWeightBody:
+      type: object
+      properties:
+        weightKg:
+          type: number
+        loggedAt:
+          type: string
+        notes:
+          type: string
+          nullable: true
+      required: [weightKg, loggedAt]
+
+    DashboardSummary:
+      type: object
+      properties:
+        totalCats:
+          type: integer
+        feedingsToday:
+          type: integer
+        upcomingAppointments:
+          type: integer
+        overdueAppointments:
+          type: integer
+      required: [totalCats, feedingsToday, upcomingAppointments, overdueAppointments]
+
+    AppointmentWithCat:
+      type: object
+      properties:
+        id:
+          type: integer
+        catId:
+          type: integer
+        catName:
+          type: string
+        catPhotoUrl:
+          type: string
+          nullable: true
+        date:
+          type: string
+        type:
+          type: string
+        vetName:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        completed:
+          type: boolean
+      required: [id, catId, catName, date, type, completed]
+
+    FeedingWithCat:
+      type: object
+      properties:
+        id:
+          type: integer
+        catId:
+          type: integer
+        catName:
+          type: string
+        catPhotoUrl:
+          type: string
+          nullable: true
+        fedAt:
+          type: string
+        foodType:
+          type: string
+          nullable: true
+        amountGrams:
+          type: number
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+      required: [id, catId, catName, fedAt]
+
+    Milestone:
+      type: object
+      properties:
+        id:
+          type: integer
+        catId:
+          type: integer
+        title:
+          type: string
+        ageDescription:
+          type: string
+          nullable: true
+        photoUrl:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        capturedAt:
+          type: string
+      required: [id, catId, title, capturedAt]
+
+    CreateMilestoneBody:
+      type: object
+      properties:
+        title:
+          type: string
+        ageDescription:
+          type: string
+          nullable: true
+        photoUrl:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        capturedAt:
+          type: string
+      required: [title, capturedAt]
+
+    UpdateMilestoneBody:
+      type: object
+      properties:
+        title:
+          type: string
+        ageDescription:
+          type: string
+          nullable: true
+        photoUrl:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        capturedAt:
+          type: string
+
+    MilestoneWithCat:
+      type: object
+      properties:
+        id:
+          type: integer
+        catId:
+          type: integer
+        catName:
+          type: string
+        catPhotoUrl:
+          type: string
+          nullable: true
+        title:
+          type: string
+        ageDescription:
+          type: string
+          nullable: true
+        photoUrl:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        capturedAt:
+          type: string
+      required: [id, catId, catName, title, capturedAt]
+
+    AlbumEntry:
+      type: object
+      properties:
+        id:
+          type: integer
+        catId:
+          type: integer
+        photoUrl:
+          type: string
+          nullable: true
+        caption:
+          type: string
+          nullable: true
+        capturedAt:
+          type: string
+      required: [id, catId, capturedAt]
+
+    CreateAlbumEntryBody:
+      type: object
+      properties:
+        photoUrl:
+          type: string
+          nullable: true
+        caption:
+          type: string
+          nullable: true
+        capturedAt:
+          type: string
+      required: [capturedAt]
+
+    UpdateAlbumEntryBody:
+      type: object
+      properties:
+        photoUrl:
+          type: string
+          nullable: true
+        caption:
+          type: string
+          nullable: true
+        capturedAt:
+          type: string
+
+    Medication:
+      type: object
+      properties:
+        id:
+          type: integer
+        catId:
+          type: integer
+        name:
+          type: string
+        dose:
+          type: string
+          nullable: true
+        frequencyLabel:
+          type: string
+          nullable: true
+        startDate:
+          type: string
+        endDate:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+        nextDoseAt:
+          type: string
+          nullable: true
+      required: [id, catId, name, startDate, isActive]
+
+    CreateMedicationBody:
+      type: object
+      properties:
+        name:
+          type: string
+        dose:
+          type: string
+          nullable: true
+        frequencyLabel:
+          type: string
+          nullable: true
+        startDate:
+          type: string
+        endDate:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+        nextDoseAt:
+          type: string
+          nullable: true
+      required: [name, startDate]
+
+    UpdateMedicationBody:
+      type: object
+      properties:
+        name:
+          type: string
+        dose:
+          type: string
+          nullable: true
+        frequencyLabel:
+          type: string
+          nullable: true
+        startDate:
+          type: string
+        endDate:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+        nextDoseAt:
+          type: string
+          nullable: true
+
+    MarkMedicationGivenBody:
+      type: object
+      properties:
+        nextDoseAt:
+          type: string
+          nullable: true
+      required: []
+
+    MedicationWithCat:
+      type: object
+      properties:
+        id:
+          type: integer
+        catId:
+          type: integer
+        catName:
+          type: string
+        catPhotoUrl:
+          type: string
+          nullable: true
+        name:
+          type: string
+        dose:
+          type: string
+          nullable: true
+        frequencyLabel:
+          type: string
+          nullable: true
+        startDate:
+          type: string
+        endDate:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+        nextDoseAt:
+          type: string
+          nullable: true
+      required: [id, catId, catName, name, startDate, isActive]
+
+    HealthRecord:
+      type: object
+      properties:
+        id:
+          type: integer
+        catId:
+          type: integer
+        type:
+          type: string
+        name:
+          type: string
+        date:
+          type: string
+        nextDueDate:
+          type: string
+          nullable: true
+        administeredBy:
+          type: string
+          nullable: true
+        batchNumber:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+      required: [id, catId, type, name, date]
+
+    CreateHealthRecordBody:
+      type: object
+      properties:
+        type:
+          type: string
+        name:
+          type: string
+        date:
+          type: string
+        nextDueDate:
+          type: string
+          nullable: true
+        administeredBy:
+          type: string
+          nullable: true
+        batchNumber:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+      required: [type, name, date]
+
+    UploadUrlRequest:
+      type: object
+      required: [name, size, contentType]
+      properties:
+        name:
+          type: string
+          minLength: 1
+        size:
+          type: integer
+          minimum: 1
+        contentType:
+          type: string
+          minLength: 1
+    UploadUrlResponse:
+      type: object
+      required: [uploadURL, objectPath]
+      properties:
+        uploadURL:
+          type: string
+          format: uri
+        objectPath:
+          type: string
+    ErrorEnvelope:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+
+    VetContact:
+      type: object
+      properties:
+        id:
+          type: integer
+        catId:
+          type: integer
+          nullable: true
+        clinicName:
+          type: string
+        vetName:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        isEmergency:
+          type: boolean
+        notes:
+          type: string
+          nullable: true
+      required: [id, clinicName, isEmergency]
+
+    CreateVetContactBody:
+      type: object
+      properties:
+        catId:
+          type: integer
+          nullable: true
+        clinicName:
+          type: string
+        vetName:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        isEmergency:
+          type: boolean
+        notes:
+          type: string
+          nullable: true
+      required: [clinicName]
+
+    UpdateVetContactBody:
+      type: object
+      properties:
+        catId:
+          type: integer
+          nullable: true
+        clinicName:
+          type: string
+        vetName:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        isEmergency:
+          type: boolean
+        notes:
+          type: string
+          nullable: true
